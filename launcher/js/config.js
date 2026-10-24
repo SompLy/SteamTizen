@@ -31,8 +31,7 @@ AeroTizen.config = {
   LONG_PRESS_MS: 600,
   SPEED: { MIN: 0.25, MAX: 3, STEP: 0.25 },
 
-  RECENTS_COUNT: 8,
-  AMBIENT_MS: 240000,  // Quiet time before the ambient clock (0 disables).
+  AMBIENT_MS: 3600000,  // One hour quiet → DVD screensaver (0 disables).
   NIGHT_START: 23,     // Auto night dim window (24h clock); can span midnight.
   NIGHT_END: 7,
 

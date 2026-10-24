@@ -28,7 +28,7 @@ window.AeroTizen.catalog = {
           "version": "16.35.0"
         },
         "logoColour": "#ff0000",
-        "label": "YouTube",
+        "label": null,
         "textColour": "#0f0f0f"
       }
     },
@@ -112,7 +112,7 @@ window.AeroTizen.catalog = {
           "version": "16.35.0"
         },
         "logoColour": "#000000",
-        "label": "Spotify",
+        "label": null,
         "textColour": "#000000"
       }
     },
@@ -135,7 +135,7 @@ window.AeroTizen.catalog = {
           "version": "13.21.0"
         },
         "logoColour": "#ffffff",
-        "label": "TV4 Play",
+        "label": null,
         "textColour": "#ffffff"
       }
     },
@@ -159,7 +159,7 @@ window.AeroTizen.catalog = {
           "version": "13.21.0"
         },
         "logoColour": "#ffffff",
-        "label": "HBO Max",
+        "label": null,
         "textColour": "#ffffff"
       }
     },
@@ -177,7 +177,7 @@ window.AeroTizen.catalog = {
       },
       "fallback": {
         "background": "linear-gradient(160deg,#1e2a4a,#101426)",
-        "label": "SVT Play",
+        "wordmark": "SVT Play",
         "textColour": "#ffffff"
       }
     },
@@ -205,7 +205,7 @@ window.AeroTizen.catalog = {
           "version": "16.35.0"
         },
         "logoColour": "#ffffff",
-        "label": "Stremio",
+        "label": null,
         "textColour": "#ffffff"
       }
     },
@@ -305,7 +305,7 @@ window.AeroTizen.catalog = {
           "version": "16.35.0"
         },
         "logoColour": "#ffffff",
-        "label": "Twitch",
+        "label": null,
         "textColour": "#ffffff"
       }
     },
@@ -325,7 +325,7 @@ window.AeroTizen.catalog = {
           "version": "16.35.0"
         },
         "logoColour": "#ffffff",
-        "label": "Crunchyroll",
+        "label": null,
         "textColour": "#ffffff"
       }
     },
@@ -385,7 +385,7 @@ window.AeroTizen.catalog = {
           "version": "16.35.0"
         },
         "logoColour": "#ffffff",
-        "label": "Jellyfin",
+        "label": null,
         "textColour": "#ffffff"
       }
     },
@@ -410,7 +410,7 @@ window.AeroTizen.catalog = {
         "background": "linear-gradient(135deg,#1a3fa3,#06102e)",
         "logo": null,
         "logoColour": null,
-        "label": "Disney+",
+        "label": null,
         "textColour": "#ffffff"
       }
     },
@@ -427,7 +427,7 @@ window.AeroTizen.catalog = {
         "background": "linear-gradient(135deg,#ff9e1b,#7a2c00)",
         "logo": null,
         "logoColour": null,
-        "label": "TizenBrew",
+        "label": null,
         "textColour": "#ffffff",
         "useAppIcon": true
       }

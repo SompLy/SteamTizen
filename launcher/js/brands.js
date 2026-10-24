@@ -42,10 +42,16 @@
     tile.title = shortName(app.name);
     tile.style.background = b.background;
     var fallback = A.el('div', 'app-fallback'), mark = b.logo && logoSvg(b.logo, b.logoColour);
-    if (!b.label) { fallback.classList.add('logo-only'); }
+    if (!b.label && !b.wordmark) { fallback.classList.add('logo-only'); }
     if (b.largeLogo) { fallback.classList.add('logo-big'); }
     if (mark) {
       fallback.innerHTML = mark;
+    } else if (b.wordmark) {
+      // No official vector exists (e.g. SVT Play): a typeset wordmark keeps the
+      // branded-card look without the low-res cached artwork.
+      var wm = A.el('div', 'wordmark', b.wordmark);
+      wm.style.color = b.textColour || '#fff';
+      fallback.appendChild(wm);
     } else if (b.useAppIcon && app.icon) {
       var img = new Image();
       img.className = 'logo'; img.alt = '';
@@ -53,7 +59,7 @@
       img.src = app.icon;
       fallback.appendChild(img);
     }
-    if (b.label || !mark) {
+    if (!b.wordmark && (b.label || !mark)) {
       var name = A.el('div', 'name', b.label || shortName(app.name));
       name.style.color = b.textColour;
       fallback.appendChild(name);

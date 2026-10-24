@@ -171,6 +171,8 @@ h2 { font-size: 30px; font-weight: 700; text-transform: uppercase; letter-spacin
 .grid { display: grid; grid-template-columns: repeat(5, 333px); grid-gap: 26px 22px; width: 1792px; }
 .grid .tile { width: 333px; height: 333px; }
 .grid .tile .name { font-size: 34px; }
+/* Typeset wordmark tiles (brands without an official Simple Icons vector). */
+.wordmark { font-size: 56px; font-weight: 700; letter-spacing: .06em; line-height: 1.15; text-align: center; max-width: 88%; overflow-wrap: break-word; }
 .grid .tile.on::after {
   content: ""; position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 50%;
   background: var(--focus) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center/26px no-repeat;
@@ -244,17 +246,16 @@ body.editing .topbar, body.editing main, body.editing .rail { visibility: hidden
 body.night .night-veil { opacity: 1; }
 body.tv .night-veil { visibility: hidden; }
 
-/* ambient idle: after a few quiet minutes the launcher fades into a large clock */
+/* ambient idle: after an hour quiet, a bouncing DVD logo on black */
 .ambient {
   position: fixed; top: 0; left: 0; width: 1920px; height: 1080px; z-index: 20;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: radial-gradient(1600px 900px at 50% 40%, rgba(36,56,79,.4) 0%, rgba(13,18,24,0) 70%), rgba(13,18,24,.82);
+  background: #000;
   opacity: 0; pointer-events: none; transition: opacity .9s ease;
 }
-.ambient > * + * { margin-top: 12px; }
 body.ambient .ambient { opacity: 1; }
-.ambient-time { font-size: 200px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
-.ambient-date { font-size: 46px; font-weight: 500; color: var(--muted); }
+.dvd { position: absolute; left: 0; top: 0; will-change: transform; }
+.dvd-box { font-size: 74px; font-weight: 700; letter-spacing: .22em; padding: 20px 30px 16px; border: 8px solid currentColor; border-radius: 34px; }
+.dvd-video { margin-top: 12px; font-size: 22px; font-weight: 700; letter-spacing: .6em; text-indent: .6em; text-align: center; }
 
 /* input names */
 .name-pill { display: flex; align-items: center; padding: 12px 22px; }
