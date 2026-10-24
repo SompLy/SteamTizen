@@ -15,7 +15,7 @@
   function render() {
     var grid = A.$('grid'), home = A.settings.home, size = A.settings.cardSize === 'small' ? 'small' : 'big';
     COLS = cfg.CARD_COLUMNS[size];
-    grid.className = 'app-grid cards-' + size + (page === 'fun' ? ' fun' : '');
+    grid.className = 'app-grid cards-' + size;
     grid.textContent = '';
     if (page === 'home') {
       // Home is streaming apps only; built-in activities moved to the Fun tab.

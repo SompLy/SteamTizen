@@ -16,7 +16,9 @@
     box: svg(BADGE + '<path fill="none" stroke="#fff" stroke-width="1.6" d="M4.5 10h15v5h-15z"/><circle cx="16.5" cy="12.5" r="1" fill="#fff"/>'),
     snake: svg('<path fill="none" stroke="#1a9fff" stroke-width="2.4" stroke-linecap="round" d="M4 18c0-5 5-5 9-5s7-1 7-6"/><circle cx="20" cy="7" r="2.4" fill="#1a9fff"/>'),
     runner: svg('<circle cx="14" cy="4.6" r="2.3" fill="#1a9fff"/><path fill="none" stroke="#1a9fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M13.5 8.5 10 12l3.5 2.5V21M13.5 8.5l3.5 2 4 .5M10 12l-3.5 1.5M13.5 14.5l3.5 5"/>'),
-    farm: svg('<path fill="none" stroke="#1ed760" stroke-width="2.2" stroke-linecap="round" d="M12 21v-8"/><path fill="#1ed760" d="M12 13C12 8.5 9 6 4.5 6 4.5 10.5 7.5 13 12 13zm0-2.6c0-4 2.7-6.2 7.5-6.2 0 4-2.7 6.2-7.5 6.2z"/>')
+    farm: svg('<path fill="none" stroke="#1ed760" stroke-width="2.2" stroke-linecap="round" d="M12 21v-8"/><path fill="#1ed760" d="M12 13C12 8.5 9 6 4.5 6 4.5 10.5 7.5 13 12 13zm0-2.6c0-4 2.7-6.2 7.5-6.2 0 4-2.7 6.2-7.5 6.2z"/>'),
+    bricks: svg('<path fill="none" stroke="#1a9fff" stroke-width="2.4" d="M5 4h14v3.4H5zM5 9h14v3.4H5z"/><circle cx="9" cy="16.5" r="2.1" fill="#1a9fff"/><path fill="none" stroke="#1a9fff" stroke-width="2.6" stroke-linecap="round" d="M7.5 21h9"/>'),
+    merge: svg('<rect x="3" y="3" width="8" height="8" rx="2" fill="#33465c"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#2a6f97"/><rect x="3" y="13" width="8" height="8" rx="2" fill="#2a6f97"/><rect x="13" y="13" width="8" height="8" rx="2" fill="#1a9fff"/>')
   };
 
   function shortName(name) { return name.replace(/ - .*/, '').replace(/NextGeneration$/, ''); }

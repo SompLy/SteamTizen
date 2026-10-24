@@ -10,7 +10,7 @@ AeroTizen.config = {
   LEGACY_STORAGE_KEYS: ['hearth.home.v1', 'declutter.home.v5'],
 
   // Remote control key codes (Tizen TV).
-  KEY: { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 10009, ESC: 27, IME_DONE: 65376, IME_CANCEL: 65385, GREEN: 404 },
+  KEY: { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 10009, ESC: 27, IME_DONE: 65376, IME_CANCEL: 65385 },
 
   // Apps placed on the home grid the first time, by name prefix, in this order.
   DEFAULT_HOME_APPS: ['youtube', 'netflix', 'prime video', 'stremio', 'spotify'],
@@ -29,12 +29,14 @@ AeroTizen.config = {
 
   // Built-in activities (open fullscreen overlays, like the fireplace)
   BUILTIN_APPS: {
-    '__fire':   { label: 'Fireplace',   icon: 'flame',  layer: 'fireplace',   module: '' },
-    '__snake':  { label: 'Snake',       icon: 'snake',  layer: 'snake-game',  module: 'SnakeGame' },
-    '__runner': { label: 'Lane Runner', icon: 'runner', layer: 'runner-game', module: 'RunnerGame' },
-    '__farm':   { label: 'Mini Farm',   icon: 'farm',   layer: 'farm-game',   module: 'FarmGame' }
+    '__fire':     { label: 'Fireplace',   icon: 'flame',  layer: 'fireplace',     module: '' },
+    '__snake':    { label: 'Snake',       icon: 'snake',  layer: 'snake-game',    module: 'SnakeGame' },
+    '__runner':   { label: 'Lane Runner', icon: 'runner', layer: 'runner-game',   module: 'RunnerGame' },
+    '__farm':     { label: 'Mini Farm',   icon: 'farm',   layer: 'farm-game',     module: 'FarmGame' },
+    '__breakout': { label: 'Breakout',    icon: 'bricks', layer: 'breakout-game', module: 'BreakoutGame' },
+    '__merge':    { label: '2048',        icon: 'merge',  layer: 'merge-game',    module: 'MergeGame' }
   },
-  BUILTIN_IDS: ['__fire', '__snake', '__runner', '__farm'],
+  BUILTIN_IDS: ['__fire', '__snake', '__runner', '__farm', '__breakout', '__merge'],
 
   CARD_COLUMNS: { big: 3, small: 5 },  // Settings → App cards
   LONG_PRESS_MS: 600,

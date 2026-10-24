@@ -28,7 +28,7 @@ no root.
 
 ## Built-in games
 
-Three games run fullscreen on the remote alone — arrows to steer, OK to act, BACK to leave.
+Five games run fullscreen on the remote alone — arrows to steer, OK to act, BACK to leave.
 They live on the **Fun** tab next to the fireplace.
 
 | Mini Farm | Farm shop |
@@ -39,8 +39,8 @@ They live on the **Fun** tab next to the fireplace.
 seed, so the loop never dead-ends. Coins buy shop upgrades that persist between sessions:
 the Sprinkler grows crops 20% faster per level, the Market stall pays +1 coin per harvest,
 the Seed barn yields +1 extra seed, and Clear land adds a whole row of plots. Out of seeds?
-Pressing OK on an empty plot opens the shop for you. Press **GREEN** (or **S** in the browser)
-to open it anytime.
+Pressing OK on an empty plot opens the shop for you. The shop hut in the bottom-right
+corner opens it anytime; leave the shop with Done or BACK.
 
 | Snake | Lane Runner |
 |---|---|
@@ -49,6 +49,10 @@ to open it anytime.
 **Snake** — classic 40×22 board, speeds up as you eat. **Lane Runner** — 3-lane endless runner
 in Subway Surfers view: lanes run away from you and obstacles bear down from down the tracks —
 switch lanes, jump the crates, roll under the bars, grab the coins.
+
+**Breakout** — arrows slide the paddle, OK serves; three balls, five brick rows, clearing
+them all wins. **2048** — arrows slide the whole board, equal tiles merge once per move,
+and a full board with no merges is the end; OK deals a fresh one.
 
 ## Themes
 

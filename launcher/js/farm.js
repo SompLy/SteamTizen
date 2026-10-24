@@ -1,7 +1,8 @@
 // Built-in: a tiny farming game (Hay Day flavored). Arrows move the cursor, OK plants a
-// seed or harvests a grown crop; harvesting pays coins and seeds. GREEN (or S in the
-// browser) opens the shop to spend coins on upgrades; OK on a plot with no seeds left
-// opens it too. Progress persists in localStorage between sessions.
+// seed or harvests a grown crop; harvesting pays coins and seeds. OK on the shop hut
+// (bottom-right cell) opens the shop to spend coins on upgrades — an empty plot with no
+// seeds opens it too. Done in the shop, or BACK, closes it. Progress persists in
+// localStorage between sessions.
 window.FarmGame = (function () {
   'use strict';
 
@@ -55,7 +56,9 @@ window.FarmGame = (function () {
   }
 
   function act() {
-    var p = plots[cy * COLS + cx];
+    var i = cy * COLS + cx;
+    if (i === plots.length - 1) { shop = true; shopSel = 0; return; }  // the shop hut, always the last cell
+    var p = plots[i];
     if (p.stage === 0) {
       if (seeds > 0) { seeds -= 1; p.stage = 1; p.at = Date.now(); save(); }
       else { shop = true; shopSel = 0; }  // out of seeds: the shop is the way forward
@@ -117,6 +120,22 @@ window.FarmGame = (function () {
     }
   }
 
+  // The last cell is the shop hut: OK there opens the shop.
+  function drawHut(x, y) {
+    ctx.fillStyle = '#8a5a33';
+    ctx.fillRect(x + 30, y + 56, 70, 58);
+    ctx.fillStyle = '#5c3a1e';
+    ctx.beginPath(); ctx.moveTo(x + 65, y + 18);
+    ctx.lineTo(x + 112, y + 60); ctx.lineTo(x + 18, y + 60);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#3a2410';
+    ctx.fillRect(x + 54, y + 76, 22, 38);
+    ctx.fillStyle = 'rgba(255,255,255,.75)';
+    ctx.font = '500 20px Roboto, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Shop', x + 65, y + 127);
+    ctx.textAlign = 'left';
+  }
+
   function draw(now) {
     var oy = (1080 - rows * PITCH) / 2;
     ctx.fillStyle = '#12201a'; ctx.fillRect(0, 0, 1920, 1080);
@@ -125,7 +144,9 @@ window.FarmGame = (function () {
         var x = OX + c * PITCH + 10, y = oy + r * PITCH + 10;
         ctx.fillStyle = (r + c) % 2 ? '#2c5134' : '#294c30';
         rrect(ctx, x, y, SIZE, SIZE, 18); ctx.fill();
-        var p = plots[r * COLS + c];
+        var idx = r * COLS + c;
+        if (idx === plots.length - 1) { drawHut(x, y); continue; }
+        var p = plots[idx];
         if (p.stage === 2 || (p.stage === 1 && now - p.at >= growMs())) { p.stage = 2; }
         drawCrop(x, y, p, now);
       }
@@ -140,44 +161,53 @@ window.FarmGame = (function () {
     ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.font = '700 48px Roboto, sans-serif';
     ctx.fillText('Coins ' + coins + '  ·  Seeds ' + seeds + '  ·  Harvested ' + total, OX, oy - 28);
     ctx.textAlign = 'right'; ctx.fillStyle = 'rgba(255,255,255,.55)';
-    ctx.fillText('GREEN shop', 1920 - OX, 1080 - 36);
+    ctx.fillText('OK on the hut opens the shop', 1920 - OX, 1080 - 36);
     if (shop) { drawShop(); }
     ctx.textAlign = 'left';
   }
 
   function drawShop() {
-    var PW = 900, px = (1920 - PW) / 2, py = 120, rowH = 130;
+    var PW = 900, px = (1920 - PW) / 2, py = 120, rowH = 130, rowsN = UPGRADES.length + 1;
     ctx.fillStyle = 'rgba(5,8,12,.82)'; ctx.fillRect(0, 0, 1920, 1080);
-    ctx.fillStyle = '#101722'; rrect(ctx, px, py, PW, 700, 24); ctx.fill();
-    ctx.strokeStyle = '#263140'; ctx.lineWidth = 3; rrect(ctx, px, py, PW, 700, 24); ctx.stroke();
+    ctx.fillStyle = '#101722'; rrect(ctx, px, py, PW, rowH * rowsN + 190, 24); ctx.fill();
+    ctx.strokeStyle = '#263140'; ctx.lineWidth = 3; rrect(ctx, px, py, PW, rowH * rowsN + 190, 24); ctx.stroke();
     ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.font = '700 60px Roboto, sans-serif';
     ctx.fillText('Shop', px + 44, py + 76);
     ctx.textAlign = 'right'; ctx.fillStyle = '#f5c518';
     ctx.fillText(coins + ' coins', px + PW - 44, py + 76);
-    for (var i = 0; i < UPGRADES.length; i++) {
-      var u = UPGRADES[i], y = py + 116 + i * rowH, level = lv[u.id], maxed = level >= u.max;
+    for (var i = 0; i < rowsN; i++) {
+      var y = py + 116 + i * rowH;
       if (i === shopSel) {
         ctx.fillStyle = 'rgba(26,159,255,.16)'; rrect(ctx, px + 20, y, PW - 40, rowH - 14, 16); ctx.fill();
         ctx.strokeStyle = '#1a9fff'; ctx.lineWidth = 4; rrect(ctx, px + 20, y, PW - 40, rowH - 14, 16); ctx.stroke();
       }
       ctx.textAlign = 'left'; ctx.fillStyle = '#fff'; ctx.font = '700 40px Roboto, sans-serif';
-      ctx.fillText(u.name, px + 48, y + 46);
-      ctx.fillStyle = '#8f98a0'; ctx.font = '500 30px Roboto, sans-serif';
-      ctx.fillText(u.desc, px + 48, y + 90);
-      ctx.textAlign = 'right';
-      if (maxed) {
-        ctx.fillStyle = '#5b6672'; ctx.font = '700 36px Roboto, sans-serif';
-        ctx.fillText('MAX · Lv ' + level, px + PW - 48, y + 66);
+      if (i < UPGRADES.length) {
+        var u = UPGRADES[i], level = lv[u.id], maxed = level >= u.max;
+        ctx.fillText(u.name, px + 48, y + 46);
+        ctx.fillStyle = '#8f98a0'; ctx.font = '500 30px Roboto, sans-serif';
+        ctx.fillText(u.desc, px + 48, y + 90);
+        ctx.textAlign = 'right';
+        if (maxed) {
+          ctx.fillStyle = '#5b6672'; ctx.font = '700 36px Roboto, sans-serif';
+          ctx.fillText('MAX · Lv ' + level, px + PW - 48, y + 66);
+        } else {
+          var price = u.price[level];
+          ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.font = '500 30px Roboto, sans-serif';
+          ctx.fillText('Lv ' + level + ' → ' + (level + 1), px + PW - 48, y + 44);
+          ctx.fillStyle = coins >= price ? '#f5c518' : '#c2380d'; ctx.font = '700 38px Roboto, sans-serif';
+          ctx.fillText(price + ' coins', px + PW - 48, y + 90);
+        }
       } else {
-        var price = u.price[level];
-        ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.font = '500 30px Roboto, sans-serif';
-        ctx.fillText('Lv ' + level + ' → ' + (level + 1), px + PW - 48, y + 44);
-        ctx.fillStyle = coins >= price ? '#f5c518' : '#c2380d'; ctx.font = '700 38px Roboto, sans-serif';
-        ctx.fillText(price + ' coins', px + PW - 48, y + 90);
+        ctx.fillText('Done', px + 48, y + 46);
+        ctx.fillStyle = '#8f98a0'; ctx.font = '500 30px Roboto, sans-serif';
+        ctx.fillText('Back to the farm', px + 48, y + 90);
+        ctx.textAlign = 'right'; ctx.fillStyle = '#8f98a0'; ctx.font = '700 36px Roboto, sans-serif';
+        ctx.fillText('OK', px + PW - 48, y + 66);
       }
     }
     ctx.textAlign = 'center'; ctx.fillStyle = '#8f98a0'; ctx.font = '500 32px Roboto, sans-serif';
-    ctx.fillText('OK buy · GREEN close', 960, py + 660);
+    ctx.fillText('Arrows choose · OK buys · BACK leaves', 960, py + rowH * rowsN + 160);
   }
 
   function frameLoop(t) {
@@ -198,12 +228,11 @@ window.FarmGame = (function () {
     keydown: function (k) {
       if (shop) {
         if (k === KEY.UP) { shopSel = Math.max(0, shopSel - 1); }
-        else if (k === KEY.DOWN) { shopSel = Math.min(UPGRADES.length - 1, shopSel + 1); }
-        else if (k === KEY.ENTER) { buy(UPGRADES[shopSel]); }
-        else if (k === KEY.GREEN || k === 83) { shop = false; }  // 83 = S: shop toggle in the browser
+        else if (k === KEY.DOWN) { shopSel = Math.min(UPGRADES.length, shopSel + 1); }
+        else if (k === KEY.ENTER) { if (shopSel === UPGRADES.length) { shop = false; } else { buy(UPGRADES[shopSel]); } }
+        else if (k === KEY.BACK || k === KEY.ESC) { shop = false; }  // BACK backs out of the shop first
         return true;
       }
-      if (k === KEY.GREEN || k === 83) { shop = true; shopSel = 0; return true; }
       if (k === KEY.BACK || k === KEY.ESC) { return false; }  // the shell closes the game
       if (k === KEY.LEFT) { cx = Math.max(0, cx - 1); }
       else if (k === KEY.RIGHT) { cx = Math.min(COLS - 1, cx + 1); }

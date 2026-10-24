@@ -1,6 +1,7 @@
 // Built-in game: 3-lane endless runner, Subway Surfers view — lanes run away from you,
 // obstacles bear down from the top. Left/right switch lane, Up jumps, Down rolls under
-// bars; trains need a lane switch.
+// bars. An obstacle is judged once, as its front reaches your line: jump crates,
+// roll under bars, switch lanes away from trains.
 window.RunnerGame = (function () {
   'use strict';
 
@@ -25,12 +26,12 @@ window.RunnerGame = (function () {
   function spawn() {
     var l = (Math.random() * LANES) | 0, r = Math.random();
     if (r < 0.3) {
-      obstacles.push({ lane: l, y: -440, w: 500, h: 420, type: 'train' });
+      obstacles.push({ lane: l, y: -440, w: 500, h: 420, type: 'train', strike: GROUND - 420, passed: false });
     } else if (r < 0.65) {
-      obstacles.push({ lane: l, y: -130, w: 150, h: 120, type: 'block' });
+      obstacles.push({ lane: l, y: -130, w: 150, h: 120, type: 'block', strike: GROUND - 120, passed: false });
       if (Math.random() < 0.5) { coins.push({ lane: l, y: -160 }); }
     } else {
-      obstacles.push({ lane: l, y: -250, w: 440, h: 90, type: 'bar' });
+      obstacles.push({ lane: l, y: -250, w: 440, h: 90, type: 'bar', strike: GROUND - 160, passed: false });
       coins.push({ lane: l, y: -126 });  // stays in the roll gap under the bar as both scroll
     }
     nextSpawn = dist + 700 + Math.random() * 700;
@@ -38,10 +39,22 @@ window.RunnerGame = (function () {
 
   function overlap(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
 
-  // Self-check: a bar must hit a standing player and clear a rolling one.
+  // Self-check: at the strike line a standing player hits crates and bars, a full
+  // jump (apex 200: vy -19, gravity .9) clears crates, rolling clears bars, and
+  // nothing clears trains.
   (function () {
-    var ob = { x: OX + 620, y: GROUND - 160, w: 440, h: 90 };
-    if (!overlap({ x: OX + 810, y: GROUND - 92, w: 60, h: 92 }, ob) || overlap({ x: OX + 810, y: GROUND - 48, w: 60, h: 48 }, ob)) { console.error('Lane Runner: bar must hit standing (top GROUND-92) and clear rolling (top GROUND-48)'); }
+    var x = 0;
+    var standing = { x: x, y: GROUND - 92, w: 60, h: 92 };
+    var jumping = { x: x, y: GROUND - 92 - 200, w: 60, h: 92 };
+    var rolling = { x: x, y: GROUND - 48, w: 60, h: 48 };
+    var block = { x: x, y: GROUND - 120, w: 150, h: 120 };
+    var bar = { x: x, y: GROUND - 160, w: 440, h: 90 };
+    var train = { x: x, y: GROUND - 420, w: 500, h: 420 };
+    if (overlap(standing, block) !== true || overlap(jumping, block) !== false
+        || overlap(standing, bar) !== true || overlap(rolling, bar) !== false
+        || overlap(jumping, train) !== true) {
+      console.error('Lane Runner: strike geometry must make crates jumpable, bars rollable, trains lethal');
+    }
   })();
 
   function step() {
@@ -53,13 +66,18 @@ window.RunnerGame = (function () {
       vy += 0.9; yOff += vy;
       if (yOff >= 0) { yOff = 0; vy = 0; }
     }
-    var pb = playerBox();
     obstacles = obstacles.filter(function (o) { return o.y < GROUND + 120; });
     for (var i = 0; i < obstacles.length; i++) {
       var o = obstacles[i];
       o.y += speed;
-      var ob = { x: laneX(o.lane) + (LANE_W - o.w) / 2, y: o.y, w: o.w, h: o.h };
-      if (o.lane === lane && overlap(pb, ob)) { dead = true; return; }
+      // Judged once, as the obstacle's front crosses your line: jump crates,
+      // roll under bars, leave trains for another lane.
+      if (!o.passed && o.y >= o.strike) {
+        o.passed = true;
+        if (o.lane === lane) {
+          if (o.type === 'train' || (o.type === 'block' && yOff > -85) || (o.type === 'bar' && rollT <= 0)) { dead = true; return; }
+        }
+      }
     }
     coins = coins.filter(function (c) { return c.y < GROUND + 80; });
     for (var j = 0; j < coins.length; j++) {
@@ -182,7 +200,7 @@ window.RunnerGame = (function () {
       if (dead) { return k === 13 ? (reset(), true) : true; }
       if (k === 37) { lane = Math.max(0, lane - 1); }
       else if (k === 39) { lane = Math.min(LANES - 1, lane + 1); }
-      else if (k === 38 && yOff === 0) { vy = -17; yOff = -1; }
+      else if (k === 38 && yOff === 0) { vy = -19; yOff = -1; }
       else if (k === 40) { rollT = 34; if (yOff < 0) { vy = Math.max(vy, 6); } }
       return true;
     }
