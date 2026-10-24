@@ -36,6 +36,7 @@ window.Backgrounds = (function () {
     { id: 'rain', name: 'Rain', anim: 'particles', kind: 'rain', base: 'linear-gradient(180deg,#070b12 0%,#0e1520 100%)' },
     { id: 'waves', name: 'Ocean Waves', anim: 'waves', base: 'linear-gradient(180deg,#03101c 0%,#05243a 100%)' },
     // static
+    { id: 'steam', name: 'Steam', base: 'radial-gradient(1400px 800px at 50% -10%, #24384f 0%, rgba(36,56,79,0) 60%), #131922' },
     { id: 'black', name: 'Black', base: '#000' },
     { id: 'midnight', name: 'Midnight', base: 'radial-gradient(1500px 900px at 15% -10%, #1d2a52 0%, rgba(29,42,82,0) 60%), #04060c' },
     { id: 'graphite', name: 'Graphite', base: 'linear-gradient(180deg, #202126 0%, #0c0c0e 100%)' },
