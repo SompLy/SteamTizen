@@ -1,13 +1,15 @@
-// Home and All apps share a grid and remote navigation. Only Home tiles can be moved.
+// Left rail (Home / Apps / Settings) and the content rows share remote navigation.
+// Focus moves LEFT from the first tile column onto the rail; only Home tiles move (hold OK).
 (function (A) {
   'use strict';
 
   var cfg = A.config, COLS = 3;
-  var rows = [], row = 1, col = [], scrollY = 0;
-  var page = 'home';
+  var rows = [], row = 0, col = [], scrollY = 0;
+  var page = 'home', mode = 'content', railIndex = 0;
   var moving = null;
   var CHEVRONS = { left: 'M15 5l-7 7 7 7', right: 'M9 5l7 7-7 7', up: 'M5 15l7-7 7 7', down: 'M5 9l7 7 7-7' };
 
+  function railItems() { return [A.$('rail-home'), A.$('rail-apps'), A.$('gear')]; }
   function gridTiles() { return [].slice.call(A.$('grid').children); }
 
   function render() {
@@ -23,10 +25,17 @@
     }
     A.$('apps-empty').hidden = page === 'home' || home.length > 0;
     grid.setAttribute('aria-label', page === 'home' ? 'Home apps' : 'All apps');
-    ['home', 'apps'].forEach(function (name) {
-      var tab = A.$(name + '-tab'), selected = (name === 'home') === (page === 'home');
-      tab.classList.toggle('active', selected);
-      tab.setAttribute('aria-pressed', String(selected));
+    A.$('rail-home').classList.toggle('active', page === 'home');
+    A.$('rail-apps').classList.toggle('active', page === 'apps');
+    // Recently played: a row of small tiles above the grid, newest launch first.
+    var recents = page === 'home' ? A.recents.list() : [];
+    A.$('recents-section').hidden = page !== 'home' || !recents.length;
+    var recRow = A.$('recents');
+    recRow.textContent = '';
+    recents.forEach(function (app) {
+      var tile = A.tiles.app(app, '', function () { A.apps.launch(app); });
+      tile.dataset.id = app.id;
+      recRow.appendChild(tile);
     });
     home.forEach(function (id) {
       var tile;
@@ -48,7 +57,9 @@
   }
 
   function buildRows() {
-    rows = [[A.$('gear'), A.$('home-tab'), A.$('apps-tab')]].concat(A.chunk(gridTiles(), COLS));
+    rows = [];
+    if (!A.$('recents-section').hidden) { rows.push([].slice.call(A.$('recents').children)); }
+    rows = rows.concat(A.chunk(gridTiles(), COLS));
     var inputTiles = [].slice.call(A.$('inputs').children);
     A.$('inputs-section').hidden = page !== 'home' || inputTiles.length === 0;
     if (!A.$('inputs-section').hidden) { rows.push(inputTiles); }
@@ -59,6 +70,12 @@
   function focus() {
     if (A.settingsUi.isOpen()) { return; }
     A.clearFocus();
+    if (mode === 'rail') {
+      var railEl = railItems()[railIndex];
+      if (railEl) { railEl.classList.add('focused'); }
+      return;
+    }
+    if (!rows.length) { return; }
     row = Math.max(0, Math.min(row, rows.length - 1));
     while (row > 0 && !rows[row].length) { row--; }
     col[row] = Math.max(0, Math.min(col[row] || 0, rows[row].length - 1));
@@ -76,11 +93,10 @@
 
   function moveFocus(dRow, dCol) {
     if (dCol) { col[row] += dCol; return focus(); }
-    var c = row === 0 ? 0 : col[row] || 0, r = row + dRow;
+    var c = col[row] || 0, r = row + dRow;
     while (r > 0 && r < rows.length && !rows[r].length) { r += dRow; }
     if (r < 0 || r >= rows.length) { return; }
-    // Returning to the header selects the current page, regardless of the app column.
-    row = r; col[row] = row === 0 ? (page === 'home' ? 1 : 2) : c; focus();
+    row = r; col[row] = c; focus();
   }
 
   function current() { return rows[row] && rows[row][col[row]]; }
@@ -89,9 +105,21 @@
     if (moving) { endMove(); }
     clearTimeout(pressTimer); pressTimer = null;
     page = next;
-    row = 0; col = [page === 'home' ? 1 : 2]; scrollY = 0;
+    scrollY = 0;
     A.$('rows').style.transform = 'translate3d(0,0,0)';
     render();
+  }
+
+  function enterRail() { mode = 'rail'; focus(); }
+  function enterContent() {
+    mode = 'content';
+    if (!rows[row] || !rows[row].length) { row = 0; }
+    focus();
+  }
+  function activateRail() {
+    var el = railItems()[railIndex];
+    if (el === A.$('gear')) { A.settingsUi.open(); return; }
+    showPage(el === A.$('rail-apps') ? 'apps' : 'home');
   }
 
   // ---- hold OK to move ---------------------------------------------------------
@@ -149,14 +177,22 @@
       if (k === KEY.LEFT) { stepMove(-1); } else if (k === KEY.RIGHT) { stepMove(1); } else if (k === KEY.UP) { stepMove(-COLS); } else if (k === KEY.DOWN) { stepMove(COLS); } else if (k === KEY.ENTER || k === KEY.BACK || k === KEY.ESC) { e.preventDefault(); pressHandled = true; endMove(); }
       return;
     }
-    if (k === KEY.ENTER) {
+    if (mode === 'rail') {
+      if (k === KEY.UP) { railIndex = Math.max(0, railIndex - 1); focus(); }
+      else if (k === KEY.DOWN) { railIndex = Math.min(railItems().length - 1, railIndex + 1); focus(); }
+      else if (k === KEY.ENTER) { e.preventDefault(); activateRail(); }
+      else if (k === KEY.RIGHT) { enterContent(); }
+      return;
+    }
+    if (k === KEY.LEFT) {
+      if (col[row] > 0) { moveFocus(0, -1); } else { enterRail(); }
+    } else if (k === KEY.RIGHT) { moveFocus(0, 1); } else if (k === KEY.UP) { moveFocus(-1); } else if (k === KEY.DOWN) { moveFocus(1); } else if (k === KEY.ENTER) {
       e.preventDefault();
       // Held keys auto-repeat; only the first keydown starts the long-press timer.
       if (pressTimer || pressHandled) { return; }
       pressTimer = setTimeout(function () { pressTimer = null; pressHandled = startMove(); }, cfg.LONG_PRESS_MS);
       return;
-    }
-    if (k === KEY.LEFT) { moveFocus(0, -1); } else if (k === KEY.RIGHT) { moveFocus(0, 1); } else if (k === KEY.UP) { moveFocus(-1); } else if (k === KEY.DOWN) { moveFocus(1); } else if (k === KEY.BACK || k === KEY.ESC) {
+    } else if (k === KEY.BACK || k === KEY.ESC) {
       e.preventDefault();
       if (page !== 'home') { showPage('home'); }
     }
@@ -164,19 +200,17 @@
 
   // A short press (released before the long-press timer) opens the focused item.
   function keyup(k) {
+    if (mode !== 'content') { pressHandled = false; return; }
     if (k === KEY.ENTER && pressTimer) {
       clearTimeout(pressTimer); pressTimer = null;
       var el = current();
-      if (el === A.$('gear')) { A.settingsUi.open(); } else if (el && el.onclick) { el.onclick(); }
+      if (el && el.onclick) { el.onclick(); }
     }
     pressHandled = false;
   }
 
   A.homeScreen = { render: render, buildRows: buildRows, focus: focus, keydown: keydown, keyup: keyup };
-  A.$('gear').onclick = function () {
-    if (moving) { endMove(); }
-    A.settingsUi.open();
-  };
-  A.$('home-tab').onclick = function () { showPage('home'); };
-  A.$('apps-tab').onclick = function () { showPage('apps'); };
+  A.$('rail-home').onclick = function () { railIndex = 0; showPage('home'); };
+  A.$('rail-apps').onclick = function () { railIndex = 1; showPage('apps'); };
+  A.$('gear').onclick = function () { railIndex = 2; if (moving) { endMove(); } A.settingsUi.open(); };
 })(window.AeroTizen);

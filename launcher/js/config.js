@@ -31,6 +31,9 @@ AeroTizen.config = {
   LONG_PRESS_MS: 600,
   SPEED: { MIN: 0.25, MAX: 3, STEP: 0.25 },
 
+  RECENTS_COUNT: 8,
+  AMBIENT_MS: 240000,  // Quiet time before the ambient clock (0 disables).
+
   DEFAULTS: {
     home: null,  // null selects defaults on first launch; [] keeps an empty Home.
     cardSize: 'big',

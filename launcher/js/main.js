@@ -42,8 +42,10 @@
 
   // ---- boot ----------------------------------------------------------------------
   A.settings.load();
+  A.recents.load();
   A.applyBackground();
   A.clock.start();
+  A.ambient.start();
   A.network.start();
   window.Weather.start(function () { return A.settings; });
   A.apps.load(function () {

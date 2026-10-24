@@ -12,15 +12,8 @@
   <!-- Layout inspired by LTvLauncher (github.com/leanbitlab-org/LtvLauncher); no code shared. -->
   <header class="topbar">
     <div class="topbar-left">
-      <div id="gear" class="icon-btn" data-row="0" aria-label="Settings">
-        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.9a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.9a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5A3.5 3.5 0 1 1 13 8.5a3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
-      </div>
       <svg id="network" class="status-icon" viewBox="0 0 24 24" aria-label="Network"></svg>
     </div>
-    <nav class="view-tabs" aria-label="App views">
-      <button id="home-tab" class="view-tab active" type="button" tabindex="-1" aria-pressed="true">Home</button>
-      <button id="apps-tab" class="view-tab" type="button" tabindex="-1" aria-pressed="false">All apps</button>
-    </nav>
     <div class="topbar-right">
       <span id="weather" class="weather" hidden></span>
       <span id="date" class="date"></span>
@@ -28,8 +21,29 @@
     </div>
   </header>
 
+  <!-- Left rail: sections and settings. The content column keeps the remote rows. -->
+  <nav id="rail" class="rail" aria-label="Sections">
+    <button id="rail-home" class="rail-item active" type="button" tabindex="-1" aria-pressed="true">
+      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.2 21 11h-2.4v9.8h-5.2v-6.2H10.6v6.2H5.4V11H3z"/></svg>
+      <span>Home</span>
+    </button>
+    <button id="rail-apps" class="rail-item" type="button" tabindex="-1" aria-pressed="false">
+      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
+      <span>Apps</span>
+    </button>
+    <div class="rail-spacer"></div>
+    <button id="gear" class="rail-item" type="button" tabindex="-1" aria-label="Settings">
+      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.9a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.9a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5A3.5 3.5 0 1 1 13 8.5a3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
+      <span>Settings</span>
+    </button>
+  </nav>
+
   <div class="content-viewport">
     <main id="rows">
+      <section id="recents-section" class="row-wrap" hidden>
+        <h2>Recently played</h2>
+        <div id="recents" class="row small"></div>
+      </section>
       <div id="grid" class="app-grid" aria-label="Home apps"></div>
       <p id="apps-empty" class="apps-empty" hidden>No apps found.</p>
       <section id="inputs-section" class="row-wrap inputs-wrap" hidden>
@@ -82,6 +96,11 @@
     <div id="fire-volume" class="fire-volume"></div>
   </div>
 
+  <div id="ambient" class="ambient" hidden>
+    <div id="ambient-time" class="ambient-time"></div>
+    <div id="ambient-date" class="ambient-date"></div>
+  </div>
+
   <div id="toast" class="toast" hidden></div>
   <script src="js/config.js"></script>
   <script src="js/app-catalog.js"></script>
@@ -97,6 +116,8 @@
   <script src="js/artwork.js"></script>
   <script src="js/brands.js"></script>
   <script src="js/homewatch.js"></script>
+  <script src="js/recents.js"></script>
+  <script src="js/ambient.js"></script>
   <script src="js/apps.js"></script>
   <script src="js/inputs.js"></script>
   <script src="js/home-screen.js"></script>
