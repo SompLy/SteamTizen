@@ -15,7 +15,8 @@
     // Text entry: the on-screen keyboard owns the keys; OK/Done/Back finish.
     if (active && active.tagName === 'INPUT') {
       if (k === KEY.ENTER || k === KEY.BACK || k === KEY.ESC || k === KEY.IME_DONE || k === KEY.IME_CANCEL) {
-        e.preventDefault(); active.blur(); A.settingsUi.focus();
+        e.preventDefault(); active.blur();
+        if (A.settingsUi.isOpen()) { A.settingsUi.focus(); } else { A.homeScreen.focus(); }
       }
       return;
     }
@@ -46,6 +47,7 @@
   A.applyBackground();
   A.clock.start();
   A.ambient.start();
+  A.night.start();
   A.network.start();
   window.Weather.start(function () { return A.settings; });
   A.apps.load(function () {

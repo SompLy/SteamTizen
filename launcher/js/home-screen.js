@@ -5,7 +5,7 @@
 
   var cfg = A.config, COLS = 3;
   var rows = [], row = 0, col = [], scrollY = 0;
-  var page = 'home', mode = 'content', railIndex = 0;
+  var page = 'home', mode = 'content', railIndex = 0, query = '';
   var moving = null;
   var CHEVRONS = { left: 'M15 5l-7 7 7 7', right: 'M9 5l7 7-7 7', up: 'M5 15l7-7 7 7', down: 'M5 9l7 7 7-7' };
 
@@ -27,6 +27,16 @@
     grid.setAttribute('aria-label', page === 'home' ? 'Home apps' : 'All apps');
     A.$('rail-home').classList.toggle('active', page === 'home');
     A.$('rail-apps').classList.toggle('active', page === 'apps');
+    // Search row only on the All apps page; typing filters the grid live.
+    if (page === 'apps') {
+      A.$('search-section').hidden = false;
+      if (query) {
+        home = home.filter(function (id) { return A.apps.byId(id).name.toLowerCase().indexOf(query) >= 0; });
+      }
+      A.$('apps-empty').textContent = query ? 'No matching apps.' : 'No apps found.';
+    } else {
+      A.$('search-section').hidden = true;
+    }
     // Recently played: a row of small tiles above the grid, newest launch first.
     var recents = page === 'home' ? A.recents.list() : [];
     A.$('recents-section').hidden = page !== 'home' || !recents.length;
@@ -58,6 +68,7 @@
 
   function buildRows() {
     rows = [];
+    if (page === 'apps') { rows.push([A.$('search-bar')]); }
     if (!A.$('recents-section').hidden) { rows.push([].slice.call(A.$('recents').children)); }
     rows = rows.concat(A.chunk(gridTiles(), COLS));
     var inputTiles = [].slice.call(A.$('inputs').children);
@@ -92,6 +103,8 @@
   }
 
   function moveFocus(dRow, dCol) {
+    var input = A.$('app-search');
+    if (document.activeElement === input) { input.blur(); }  // arrow keys leave the IME
     if (dCol) { col[row] += dCol; return focus(); }
     var c = col[row] || 0, r = row + dRow;
     while (r > 0 && r < rows.length && !rows[r].length) { r += dRow; }
@@ -105,6 +118,9 @@
     if (moving) { endMove(); }
     clearTimeout(pressTimer); pressTimer = null;
     page = next;
+    query = '';
+    A.$('app-search').value = '';
+    A.$('app-search').blur();
     scrollY = 0;
     A.$('rows').style.transform = 'translate3d(0,0,0)';
     render();
@@ -213,4 +229,10 @@
   A.$('rail-home').onclick = function () { railIndex = 0; showPage('home'); };
   A.$('rail-apps').onclick = function () { railIndex = 1; showPage('apps'); };
   A.$('gear').onclick = function () { railIndex = 2; if (moving) { endMove(); } A.settingsUi.open(); };
+  A.$('search-bar').onclick = function () { A.$('app-search').focus(); };
+  A.$('app-search').oninput = function () {
+    var input = A.$('app-search');
+    query = input.value.trim().toLowerCase();
+    render();
+  };
 })(window.AeroTizen);

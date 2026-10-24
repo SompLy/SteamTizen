@@ -33,6 +33,8 @@ AeroTizen.config = {
 
   RECENTS_COUNT: 8,
   AMBIENT_MS: 240000,  // Quiet time before the ambient clock (0 disables).
+  NIGHT_START: 23,     // Auto night dim window (24h clock); can span midnight.
+  NIGHT_END: 7,
 
   DEFAULTS: {
     home: null,  // null selects defaults on first launch; [] keeps an empty Home.
@@ -42,6 +44,7 @@ AeroTizen.config = {
     showWeather: true,
     showTime: true,
     showNetwork: true,
+    nightDim: true,
     tempUnit: null,  // Select the locale's weather unit when first loaded.
     weatherLocation: null,
     weatherShowLocation: true,
