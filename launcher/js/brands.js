@@ -13,7 +13,10 @@
     tv: svg(BADGE + '<path fill="none" stroke="#fff" stroke-width="1.6" d="M5 8h14v9H5zM9 5l3 3 3-3"/>'),
     game: svg(BADGE + '<path fill="#fff" d="M7.5 8h9a3.5 3.5 0 0 1 3.4 4.3l-.8 3.2a2 2 0 0 1-3.4.9L14.3 15H9.7l-1.4 1.4a2 2 0 0 1-3.4-.9l-.8-3.2A3.5 3.5 0 0 1 7.5 8zM8 10v1H7v1h1v1h1v-1h1v-1H9v-1zm7.5.3a.8.8 0 1 0 0 1.6.8.8 0 0 0 0-1.6zm-1.6 1.6a.8.8 0 1 0 0 1.6.8.8 0 0 0 0-1.6z"/>'),
     pc: svg(BADGE + '<path fill="none" stroke="#fff" stroke-width="1.6" d="M5 6.5h14v9H5zM9 19h6M12 15.5V19"/>'),
-    box: svg(BADGE + '<path fill="none" stroke="#fff" stroke-width="1.6" d="M4.5 10h15v5h-15z"/><circle cx="16.5" cy="12.5" r="1" fill="#fff"/>')
+    box: svg(BADGE + '<path fill="none" stroke="#fff" stroke-width="1.6" d="M4.5 10h15v5h-15z"/><circle cx="16.5" cy="12.5" r="1" fill="#fff"/>'),
+    snake: svg('<path fill="none" stroke="#1a9fff" stroke-width="2.4" stroke-linecap="round" d="M4 18c0-5 5-5 9-5s7-1 7-6"/><circle cx="20" cy="7" r="2.4" fill="#1a9fff"/>'),
+    runner: svg('<circle cx="14" cy="4.6" r="2.3" fill="#1a9fff"/><path fill="none" stroke="#1a9fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M13.5 8.5 10 12l3.5 2.5V21M13.5 8.5l3.5 2 4 .5M10 12l-3.5 1.5M13.5 14.5l3.5 5"/>'),
+    farm: svg('<path fill="none" stroke="#1ed760" stroke-width="2.2" stroke-linecap="round" d="M12 21v-8"/><path fill="#1ed760" d="M12 13C12 8.5 9 6 4.5 6 4.5 10.5 7.5 13 12 13zm0-2.6c0-4 2.7-6.2 7.5-6.2 0 4-2.7 6.2-7.5 6.2z"/>')
   };
 
   function shortName(name) { return name.replace(/ - .*/, '').replace(/NextGeneration$/, ''); }

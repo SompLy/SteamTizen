@@ -24,6 +24,11 @@
       if (k === KEY.UP) { window.Fireplace.volumeUp(); } else if (k === KEY.DOWN) { window.Fireplace.volumeDown(); } else if (k === KEY.BACK || k === KEY.ESC || k === KEY.ENTER) { e.preventDefault(); window.Fireplace.close(); }
       return;
     }
+    if (window.Games.current()) {
+      if (k === KEY.BACK || k === KEY.ESC) { e.preventDefault(); window.Games.close(); }
+      else { window.Games.keydown(k); }
+      return;
+    }
     if (A.inputs.watching) {
       if (k === KEY.BACK || k === KEY.ESC || k === KEY.ENTER) { e.preventDefault(); A.inputs.leave(); }
       return;
@@ -33,7 +38,7 @@
   });
 
   document.addEventListener('keyup', function (e) {
-    if (A.settingsUi.isOpen() || A.inputs.watching || window.Fireplace.isOpen()) { return; }
+    if (A.settingsUi.isOpen() || A.inputs.watching || window.Fireplace.isOpen() || window.Games.current()) { return; }
     A.homeScreen.keyup(e.keyCode);
   });
 
@@ -51,6 +56,9 @@
   window.Weather.start(function () { return A.settings; });
   A.apps.load(function () {
     if (A.settings.home === null) { A.settings.home = A.apps.defaultHome(); A.settings.save(); }
+    // New built-in activities join the home screen on upgrade too.
+    var need = A.config.BUILTIN_IDS.filter(function (id) { return A.settings.home.indexOf(id) < 0; });
+    if (need.length && A.settings.home.length) { A.settings.home = A.settings.home.concat(need); A.settings.save(); }
     A.homeScreen.render();
     A.inputs.load();
     A.homewatch.start();

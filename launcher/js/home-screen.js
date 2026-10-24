@@ -18,7 +18,7 @@
     grid.className = 'app-grid cards-' + size;
     grid.textContent = '';
     if (page === 'home') {
-      home = home.filter(function (id) { return id === cfg.FIREPLACE_ID || A.apps.byId(id); });
+      home = home.filter(function (id) { return cfg.BUILTIN_APPS[id] || A.apps.byId(id); });
       A.settings.home = home;
     } else {
       home = A.apps.all.map(function (app) { return app.id; });
@@ -46,6 +46,14 @@
         tile.title = 'Fireplace';
         tile.innerHTML = A.tiles.ICONS.flame;
         tile.onclick = A.apps.playFireplace;
+      } else if (cfg.BUILTIN_APPS[id]) {
+        var b = cfg.BUILTIN_APPS[id];
+        tile = A.el('div', 'tile builtin');
+        tile.setAttribute('role', 'button');
+        tile.setAttribute('aria-label', b.label);
+        tile.title = b.label;
+        tile.innerHTML = A.tiles.ICONS[b.icon];
+        tile.onclick = function () { window.Games.open(id); };
       } else {
         var app = A.apps.byId(id);
         tile = A.tiles.app(app, '', function () { A.apps.launch(app); });

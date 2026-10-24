@@ -25,7 +25,16 @@ AeroTizen.config = {
   HBBTV_LINK_METADATA: 'http://samsung.com/tv/metadata/hbbtv.link',
 
   FIREPLACE_ID: '__fire',
-  FIREPLACE_VIDEO_URL: 'https://videos.pexels.com/video-files/13081949/13081949-hd_1920_1080_60fps.mp4',
+  FIREPLACE_VIDEO_URL: 'media/fireplace.mp4',  // bundled in the package: plays offline, no TLS quirks
+
+  // Built-in activities (open fullscreen overlays, like the fireplace)
+  BUILTIN_APPS: {
+    '__fire':   { label: 'Fireplace',   icon: 'flame',  layer: 'fireplace',   module: '' },
+    '__snake':  { label: 'Snake',       icon: 'snake',  layer: 'snake-game',  module: 'SnakeGame' },
+    '__runner': { label: 'Lane Runner', icon: 'runner', layer: 'runner-game', module: 'RunnerGame' },
+    '__farm':   { label: 'Mini Farm',   icon: 'farm',   layer: 'farm-game',   module: 'FarmGame' }
+  },
+  BUILTIN_IDS: ['__fire', '__snake', '__runner', '__farm'],
 
   CARD_COLUMNS: { big: 3, small: 5 },  // Settings → App cards
   LONG_PRESS_MS: 600,
