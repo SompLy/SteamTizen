@@ -62,7 +62,6 @@
   };
 
   apps.launch = function (app) {
-    A.recents.record(app.id);
     var label = A.tiles.shortName(app.name);
     if (!tz || !tz.application) { return A.toast('Would open ' + label); }
     var link = hbbtvLink(app.id);

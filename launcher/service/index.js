@@ -150,10 +150,19 @@ function launchNow(why) {
   state.lastLaunch = Date.now(); state.watched = null; state.seen = false;
   state.guard.lastBlocked = null; state.guard.launchCalls += 1;
   record('launch', why);
+  // eden_resume raises the app above whatever is on screen; plain launch on this
+  // firmware only starts the process behind it. Fall back if the control is rejected.
   try {
-    tizen.application.launch(SELF, function () { state.last = 'relaunched: ' + why; },
-      function (e) { state.last = 'relaunch failed: ' + (e && e.message); });
-  } catch (e) { state.last = 'relaunch threw: ' + e.message; }
+    tizen.application.launchAppControl(
+      new tizen.ApplicationControl('http://samsung.com/appcontrol/operation/eden_resume'), SELF,
+      null, function () { plainLaunch(); });
+  } catch (e) { plainLaunch(); }
+  function plainLaunch() {
+    try {
+      tizen.application.launch(SELF, function () { state.last = 'relaunched: ' + why; },
+        function (e) { state.last = 'relaunch failed: ' + (e && e.message); });
+    } catch (e) { state.last = 'relaunch threw: ' + e.message; }
+  }
 }
 // Open the launcher once at boot on non-Frame TVs. Frame TVs leave this to the guarded
 // watcher, so a Frame booting into Art Mode stays there. If the type never resolves, launch

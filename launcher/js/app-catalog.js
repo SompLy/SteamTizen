@@ -117,6 +117,71 @@ window.AeroTizen.catalog = {
       }
     },
     {
+      "key": "tv4play",
+      "name": "TV4 Play",
+      "variants": [],
+      "legacy": {
+        "brandPrefixes": [
+          "tv4"
+        ],
+        "artworkNames": [
+          "tv4 play"
+        ]
+      },
+      "fallback": {
+        "background": "linear-gradient(135deg,#e0001c,#8c0011)",
+        "logo": {
+          "slug": "tv4play",
+          "version": "13.21.0"
+        },
+        "logoColour": "#ffffff",
+        "label": "TV4 Play",
+        "textColour": "#ffffff"
+      }
+    },
+    {
+      "key": "hbomax",
+      "name": "HBO Max",
+      "variants": [],
+      "legacy": {
+        "brandPrefixes": [
+          "hbo max",
+          "hbo"
+        ],
+        "artworkNames": [
+          "hbo max"
+        ]
+      },
+      "fallback": {
+        "background": "linear-gradient(135deg,#7b2fbe,#3c156e)",
+        "logo": {
+          "slug": "hbo",
+          "version": "13.21.0"
+        },
+        "logoColour": "#ffffff",
+        "label": "HBO Max",
+        "textColour": "#ffffff"
+      }
+    },
+    {
+      "key": "svtplay",
+      "name": "SVT Play",
+      "variants": [],
+      "legacy": {
+        "brandPrefixes": [
+          "svt"
+        ],
+        "artworkNames": [
+          "svt play"
+        ]
+      },
+      "fallback": {
+        "background": "linear-gradient(160deg,#1e2a4a,#101426)",
+        "label": "SVT Play",
+        "textColour": "#ffffff"
+      }
+    },
+    {
       "key": "stremio",
       "name": "Stremio",
       "variants": [

@@ -37,16 +37,6 @@
     } else {
       A.$('search-section').hidden = true;
     }
-    // Recently played: a row of small tiles above the grid, newest launch first.
-    var recents = page === 'home' ? A.recents.list() : [];
-    A.$('recents-section').hidden = page !== 'home' || !recents.length;
-    var recRow = A.$('recents');
-    recRow.textContent = '';
-    recents.forEach(function (app) {
-      var tile = A.tiles.app(app, '', function () { A.apps.launch(app); });
-      tile.dataset.id = app.id;
-      recRow.appendChild(tile);
-    });
     home.forEach(function (id) {
       var tile;
       if (id === cfg.FIREPLACE_ID) {
@@ -69,7 +59,6 @@
   function buildRows() {
     rows = [];
     if (page === 'apps') { rows.push([A.$('search-bar')]); }
-    if (!A.$('recents-section').hidden) { rows.push([].slice.call(A.$('recents').children)); }
     rows = rows.concat(A.chunk(gridTiles(), COLS));
     var inputTiles = [].slice.call(A.$('inputs').children);
     A.$('inputs-section').hidden = page !== 'home' || inputTiles.length === 0;

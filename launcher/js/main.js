@@ -43,7 +43,6 @@
 
   // ---- boot ----------------------------------------------------------------------
   A.settings.load();
-  A.recents.load();
   A.applyBackground();
   A.clock.start();
   A.ambient.start();
