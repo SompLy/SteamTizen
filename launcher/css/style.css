@@ -38,13 +38,15 @@ html, body {
 /* ---- left rail ---- */
 .rail {
   position: fixed; top: 0; left: 0; bottom: 0; width: 132px; z-index: 5;
-  display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 44px 0;
+  display: flex; flex-direction: column; align-items: center; padding: 44px 0;
 }
+.rail > * + * { margin-top: 30px; }
 .rail-item {
   width: 96px; height: 96px; border: 0; border-radius: 26px; padding: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   font: inherit; font-size: 17px; color: var(--muted); background: transparent; cursor: pointer;
 }
+.rail-item > * + * { margin-top: 8px; }
 .rail-item svg { width: 46px; height: 46px; }
 .rail-item.active { color: var(--fg); background: rgba(26,159,255,.16); }
 .rail-item.focused { color: var(--fg); transform: none; box-shadow: 0 0 0 3px var(--focus), 0 0 22px rgba(26,159,255,.5); }
@@ -52,11 +54,13 @@ html, body {
 
 /* ---- top bar ---- */
 .topbar { display: flex; justify-content: space-between; align-items: center; height: 112px; padding: 0 64px 0 196px; }
-.topbar-left, .topbar-right { display: flex; align-items: center; gap: 28px; }
+.topbar-left, .topbar-right { display: flex; align-items: center; }
+.topbar-left > * + *, .topbar-right > * + * { margin-left: 28px; }
 .topbar [hidden] { display: none; }
 .status-icon { width: 40px; height: 40px; color: var(--fg); }
 .status-text { font-size: 34px; font-weight: 500; }
-.weather { display: flex; align-items: center; gap: 12px; font-size: 36px; margin-right: 18px; }
+.weather { display: flex; align-items: center; font-size: 36px; margin-right: 18px; }
+.weather > * + * { margin-left: 12px; }
 .topbar-right.weather-only .weather { margin-right: 0; }
 .weather svg { width: 46px; height: 46px; }
 .weather b { font-weight: 700; }
@@ -74,26 +78,31 @@ html, body {
 main { padding: 8px 64px 0 196px; transition: transform .22s ease-out; will-change: transform; }
 .row-wrap { margin-bottom: 30px; overflow: visible; }
 h2 { font-size: 30px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); margin: 0 0 18px; }
-.row { display: flex; gap: 22px; transition: transform .22s ease-out; will-change: transform; }
+.row { display: flex; transition: transform .22s ease-out; will-change: transform; }
+.row > * + * { margin-left: 22px; }
 
 .tile {
   position: relative; flex: 0 0 auto; border-radius: 14px; overflow: hidden;
-  display: flex; align-items: center; justify-content: center; gap: 22px;
+  display: flex; align-items: center; justify-content: center;
   background: var(--card);
   transform: translateZ(0);
   transition: transform .15s ease-out;
 }
-.app-grid { display: flex; flex-wrap: wrap; gap: 30px 32px; margin: 6px 0 40px; }
-.app-grid .tile { width: 332px; height: 332px; }
+.tile > * + * { margin-left: 22px; }
+/* Wrap-grids are CSS grid + grid-gap: this engine (Chromium 63) has no flex gap. */
+.app-grid { display: grid; grid-gap: 30px 24px; grid-template-columns: repeat(5, 300px); justify-content: center; margin: 6px 0 40px; }
+.app-grid .tile { width: 300px; height: 300px; }
 /* Big cards: three larger squares, centred, so two full rows fit on screen. */
-.app-grid.cards-big { justify-content: center; gap: 36px 48px; }
+.app-grid.cards-big { grid-gap: 36px 48px; grid-template-columns: repeat(3, 420px); }
 .app-grid.cards-big .tile { width: 420px; height: 420px; }
 /* Inputs share the row width; more inputs shrink evenly. */
-#inputs { gap: 32px; }
-.small .tile { flex: 1 1 0; min-width: 0; max-width: 576px; height: 124px; justify-content: flex-start; padding: 0 28px; gap: 22px; }
+#inputs > * + * { margin-left: 32px; }
+.small .tile { flex: 1 1 0; min-width: 0; max-width: 576px; height: 124px; justify-content: flex-start; padding: 0 28px; }
+.small .tile > * + * { margin-left: 22px; }
 
 .tile .logo { flex: 0 0 auto; object-fit: contain; }
-.app-fallback { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; width: 100%; height: 100%; padding: 24px; }
+.app-fallback { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 24px; }
+.app-fallback > * + * { margin-top: 20px; }
 .app-fallback[hidden] { display: none; }
 .app-fallback .logo { width: 150px; height: 150px; }
 .app-fallback.logo-only .logo { width: 250px; height: 190px; }
@@ -112,7 +121,8 @@ h2 { font-size: 30px; font-weight: 700; text-transform: uppercase; letter-spacin
   box-shadow: 0 0 0 3px var(--focus), 0 0 26px rgba(26,159,255,.5), 0 18px 40px rgba(0,0,0,.6);
   z-index: 2;
 }
-.tile.fire { flex-direction: column; gap: 20px; background: radial-gradient(110% 120% at 50% 110%, #ff8a1e 0%, #c2380d 35%, #3a0d04 70%, #120402 100%); }
+.tile.fire { flex-direction: column; background: radial-gradient(110% 120% at 50% 110%, #ff8a1e 0%, #c2380d 35%, #3a0d04 70%, #120402 100%); }
+.tile.fire > * + * { margin-top: 20px; }
 .tile.fire svg.flame { width: 140px; height: 140px; }
 
 /* ---- settings sheet ---- */
@@ -122,7 +132,7 @@ h2 { font-size: 30px; font-weight: 700; text-transform: uppercase; letter-spacin
 .hint { color: var(--muted); font-size: 24px; margin: -6px 0 26px; }
 
 /* background swatches */
-.swatches { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 40px; width: 1792px; }
+.swatches { display: grid; grid-template-columns: repeat(8, 208px); grid-gap: 18px; margin-bottom: 40px; width: 1792px; }
 .swatch {
   position: relative; width: 208px; height: 117px; border-radius: 10px; overflow: hidden;
   box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); transition: transform .15s ease-out;
@@ -158,7 +168,7 @@ h2 { font-size: 30px; font-weight: 700; text-transform: uppercase; letter-spacin
 .small .tile .name .sub { font-size: 21px; font-weight: 400; color: var(--muted); margin-top: 4px; }
 .small .tile.off { opacity: .42; }
 .small .tile.off.focused { opacity: .8; }
-.grid { display: flex; flex-wrap: wrap; gap: 26px 22px; width: 1792px; }
+.grid { display: grid; grid-template-columns: repeat(5, 333px); grid-gap: 26px 22px; width: 1792px; }
 .grid .tile { width: 333px; height: 333px; }
 .grid .tile .name { font-size: 34px; }
 .grid .tile.on::after {
@@ -184,7 +194,8 @@ body.tv .topbar, body.tv main, body.tv .rail { visibility: hidden; }
 
 .toast { position: fixed; left: 50%; bottom: 60px; transform: translateX(-50%); z-index: 30; padding: 18px 34px; border-radius: 12px; background: var(--card); font-size: 26px; }
 .weather[hidden] { display: none; }
-.units { display: flex; gap: 18px; margin-bottom: 40px; }
+.units { display: flex; margin-bottom: 40px; }
+.units > * + * { margin-left: 18px; }
 #date-formats { flex-wrap: wrap; }
 #date-formats .pill { flex: 0 0 auto; white-space: nowrap; }
 .pill.unit { background: var(--card); font-size: 26px; padding: 16px 34px; border-radius: 999px; }
@@ -200,9 +211,11 @@ body.previewing .sheet, body.previewing .topbar, body.previewing main, body.prev
 /* Settings: hide the home grid behind the sheet so only the background shows through. */
 body.editing .topbar, body.editing main, body.editing .rail { visibility: hidden; }
 /* speed slider (only shown for animated backgrounds) */
-.speed-row { display: flex; align-items: center; gap: 30px; margin: -14px 0 40px; }
+.speed-row { display: flex; align-items: center; margin: -14px 0 40px; }
+.speed-row > * + * { margin-left: 30px; }
 .speed-row[hidden] { display: none; }
-.slider { display: flex; align-items: center; gap: 26px; padding: 14px 28px; border-radius: 999px; background: var(--card); }
+.slider { display: flex; align-items: center; padding: 14px 28px; border-radius: 999px; background: var(--card); }
+.slider > * + * { margin-left: 26px; }
 .slider-label { font-size: 26px; }
 .track { position: relative; width: 520px; height: 10px; border-radius: 5px; background: #3a3a40; }
 .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; background: var(--focus); }
@@ -212,26 +225,48 @@ body.editing .topbar, body.editing main, body.editing .rail { visibility: hidden
 .slider.focused { box-shadow: 0 0 0 4px #000, 0 0 0 8px #fff; transform: none; }
 .slider.focused .slider-hint { opacity: 1; }
 .slider.focused .thumb { transform: scale(1.2); }
+/* ---- app search (All apps page) ---- */
+.search-bar {
+  display: flex; align-items: center; width: 100%; height: 96px;
+  padding: 0 36px; border-radius: 999px; background: var(--card);
+}
+.search-bar > * + * { margin-left: 20px; }
+.search-bar svg { width: 44px; height: 44px; color: var(--muted); flex: 0 0 auto; }
+.search-bar input { flex: 1; min-width: 0; height: 100%; border: 0; background: transparent; color: var(--fg); font: inherit; font-size: 34px; outline: none; }
+.search-bar input::placeholder { color: #5b6672; }
+.search-bar.focused { transform: none; box-shadow: 0 0 0 3px var(--focus), 0 0 22px rgba(26,159,255,.45); }
+
+/* ---- auto night dim: one translucent veil above the UI, below the settings sheet ---- */
+.night-veil {
+  position: fixed; top: 0; left: 0; width: 1920px; height: 1080px; z-index: 8;
+  background: rgba(5,8,12,.42); opacity: 0; pointer-events: none; transition: opacity 1.5s ease;
+}
+body.night .night-veil { opacity: 1; }
+body.tv .night-veil { visibility: hidden; }
+
 /* ambient idle: after a few quiet minutes the launcher fades into a large clock */
 .ambient {
   position: fixed; top: 0; left: 0; width: 1920px; height: 1080px; z-index: 20;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   background: radial-gradient(1600px 900px at 50% 40%, rgba(36,56,79,.4) 0%, rgba(13,18,24,0) 70%), rgba(13,18,24,.82);
   opacity: 0; pointer-events: none; transition: opacity .9s ease;
 }
+.ambient > * + * { margin-top: 12px; }
 body.ambient .ambient { opacity: 1; }
 .ambient-time { font-size: 200px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
 .ambient-date { font-size: 46px; font-weight: 500; color: var(--muted); }
 
 /* input names */
-.name-pill { display: flex; align-items: center; gap: 14px; padding: 12px 22px; }
+.name-pill { display: flex; align-items: center; padding: 12px 22px; }
+.name-pill > * + * { margin-left: 14px; }
 .name-pill .port { color: var(--muted); font-size: 22px; }
 .name-pill input { width: 260px; font: inherit; font-size: 26px; color: #fff; background: transparent; border: 0; border-bottom: 2px solid #4a4a50; outline: none; padding: 4px 2px; }
 .name-pill input::placeholder { color: #77777f; }
 .name-pill.focused input, .name-pill input:focus { border-bottom-color: var(--focus); }
 /* Weather location search: each result is one remote-control navigation row. */
 .weather-search input { width: 520px; }
-.weather-results { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 40px; }
+.weather-results { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 40px; }
+.weather-results > * + * { margin-top: 18px; }
 .weather-results[hidden] { display: none; }
 .weather-results .pill { max-width: 1680px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .date[hidden] { display: none; }

@@ -94,18 +94,9 @@
     })();
   };
 
-  // Fireplace: a fireplace video in YouTube; the built-in animated fire as a fallback.
+  // Fireplace: the built-in animated fire. (The YouTube deep-link payload is ignored
+  // by this firmware, so the tile just opened YouTube's home screen.)
   apps.playFireplace = function () {
-    var yt = null;
-    apps.all.forEach(function (a) { if (!yt && /^youtube$/i.test(a.name)) { yt = a; } });
-    if (!tz || !yt) { return window.Fireplace.open(); }
-    A.homewatch.watch(yt.id);
-    try {
-      var data = [new tz.ApplicationControlData('PAYLOAD', [JSON.stringify({ values: 'v=' + cfg.FIREPLACE_VIDEO })])];
-      tz.application.launchAppControl(new tz.ApplicationControl('http://tizen.org/appcontrol/operation/view', null, null, null, data),
-        yt.id, null, function () { window.Fireplace.open(); });
-    } catch (e) {
-      window.Fireplace.open();
-    }
+    window.Fireplace.open();
   };
 })(window.AeroTizen);

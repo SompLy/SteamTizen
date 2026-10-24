@@ -61,7 +61,8 @@
     tile.appendChild(fallback);
     tile.onclick = onSelect;
 
-    var sources = A.artwork.sources(app), at = 0;
+    // A known vector brand beats the TV's low-res cached icon: keep the fallback visible.
+    var sources = mark ? [] : A.artwork.sources(app), at = 0;
     function next() {
       if (at >= sources.length) { return; }
       var image = new Image(), src = sources[at++], timer;
