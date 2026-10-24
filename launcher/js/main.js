@@ -25,8 +25,10 @@
       return;
     }
     if (window.Games.current()) {
-      if (k === KEY.BACK || k === KEY.ESC) { e.preventDefault(); window.Games.close(); }
-      else { window.Games.keydown(k); }
+      if (k === KEY.BACK || k === KEY.ESC) { e.preventDefault(); }
+      // A game returns false only when it does not want the key (BACK quits it);
+      // the farm shop consumes BACK to close itself first.
+      if (window.Games.keydown(k) === false) { window.Games.close(); }
       return;
     }
     if (A.inputs.watching) {
@@ -56,9 +58,6 @@
   window.Weather.start(function () { return A.settings; });
   A.apps.load(function () {
     if (A.settings.home === null) { A.settings.home = A.apps.defaultHome(); A.settings.save(); }
-    // New built-in activities join the home screen on upgrade too.
-    var need = A.config.BUILTIN_IDS.filter(function (id) { return A.settings.home.indexOf(id) < 0; });
-    if (need.length && A.settings.home.length) { A.settings.home = A.settings.home.concat(need); A.settings.save(); }
     A.homeScreen.render();
     A.inputs.load();
     A.homewatch.start();

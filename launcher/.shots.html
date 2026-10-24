@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<body style="margin:0;background:#000">
+<iframe id="f" src="index.html" style="width:1920px;height:1080px;border:0;display:block"></iframe>
+<script>
+  const shot = new URLSearchParams(location.search).get('shot');
+  const f = document.getElementById('f');
+  f.addEventListener('load', function () {
+    const w = f.contentWindow;
+    // Headless virtual time barely fires rAF; timers do fire, so shim rAF onto timers
+    // before any game boots — the animation loops become ordinary setTimeout chains.
+    w.cancelAnimationFrame = function (id) { w.clearTimeout(id); };
+    w.requestAnimationFrame = function (cb) { return w.setTimeout(function () { cb(Date.now()); }, 16); };
+    setTimeout(function () { try {
+      w.document.body.classList.remove('night');
+      if (shot === 'shrek') {
+        w.AeroTizen.settings.background = 'shrek';
+        w.AeroTizen.applyBackground();
+      } else if (shot === 'snake') {
+        w.Games.open('__snake');
+        w.SnakeGame.keydown(40);
+        setTimeout(function () { w.SnakeGame.keydown(37); }, 700);
+        setTimeout(function () { w.SnakeGame.keydown(38); }, 1400);
+      } else if (shot === 'runner') {
+        w.Games.open('__runner');  // no input: show the lane, coins and an approaching obstacle
+      }
+    } catch (e) { document.title = 'ERR ' + e; } }, 1200);
+  });
+</script>
+</body>
+</html>

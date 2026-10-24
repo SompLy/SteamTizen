@@ -55,7 +55,8 @@ test('catalogue fallback logos exist and legacy rules are explicit', () => {
       if (entry.fallback.logo !== null) {
         const { slug, version } = entry.fallback.logo;
         assert.match(slug, /^[a-z0-9][a-z0-9-]*$/);
-        assert.match(version, /^\d+\.\d+\.\d+$/);
+        // Fetched logos pin the version they came from; hand-drawn vectors say "custom".
+        assert.ok(/^\d+\.\d+\.\d+$/.test(version) || version === 'custom', `Bad logo version: ${entry.key}/${slug}`);
         assert.ok(Object.hasOwn(logos, slug), `Missing logo: ${entry.key}/${slug}`);
         assert.equal(typeof entry.fallback.logoColour, 'string');
       }
@@ -69,7 +70,7 @@ test('catalogue fallback logos exist and legacy rules are explicit', () => {
         assert.ok(alias && alias === alias.toLowerCase());
       }
       if (field === 'brandPrefixes') assert.ok(entry.fallback, `Brand rule needs fallback styling: ${entry.key}`);
-      if (field === 'artworkNames') assert.ok(entry.variants.some(v => v.storeId), `Artwork rule needs store ID: ${entry.key}`);
+      if (field === 'artworkNames') assert.ok(entry.variants.some(v => v.storeId) || (entry.fallback && entry.fallback.logo && Object.hasOwn(logos, entry.fallback.logo.slug)), `Artwork rule needs a store ID or a vector fallback: ${entry.key}`);
     }
   }
 });

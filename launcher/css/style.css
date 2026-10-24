@@ -197,6 +197,9 @@ body.tv .topbar, body.tv main, body.tv .rail { visibility: hidden; }
 /* ---- built-in games ---- */
 .game { position: fixed; top: 0; left: 0; width: 1920px; height: 1080px; z-index: 15; background: #0b1016; }
 .game canvas { display: block; }
+/* Fun tab: 2x2 grid of activity cards with big glyphs. */
+.app-grid.fun { grid-template-columns: repeat(2, 420px); }
+.tile.builtin svg { width: 175px; height: 175px; }
 
 .toast { position: fixed; left: 50%; bottom: 60px; transform: translateX(-50%); z-index: 30; padding: 18px 34px; border-radius: 12px; background: var(--card); font-size: 26px; }
 .weather[hidden] { display: none; }

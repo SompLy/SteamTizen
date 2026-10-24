@@ -1,4 +1,4 @@
-// Left rail (Home / Apps / Settings) and the content rows share remote navigation.
+// Left rail (Home / Fun / Apps / Settings) and the content rows share remote navigation.
 // Focus moves LEFT from the first tile column onto the rail; only Home tiles move (hold OK).
 (function (A) {
   'use strict';
@@ -9,23 +9,27 @@
   var moving = null;
   var CHEVRONS = { left: 'M15 5l-7 7 7 7', right: 'M9 5l7 7-7 7', up: 'M5 15l7-7 7 7', down: 'M5 9l7 7 7-7' };
 
-  function railItems() { return [A.$('rail-home'), A.$('rail-apps'), A.$('gear')]; }
+  function railItems() { return [A.$('rail-home'), A.$('rail-fun'), A.$('rail-apps'), A.$('gear')]; }
   function gridTiles() { return [].slice.call(A.$('grid').children); }
 
   function render() {
     var grid = A.$('grid'), home = A.settings.home, size = A.settings.cardSize === 'small' ? 'small' : 'big';
     COLS = cfg.CARD_COLUMNS[size];
-    grid.className = 'app-grid cards-' + size;
+    grid.className = 'app-grid cards-' + size + (page === 'fun' ? ' fun' : '');
     grid.textContent = '';
     if (page === 'home') {
-      home = home.filter(function (id) { return cfg.BUILTIN_APPS[id] || A.apps.byId(id); });
+      // Home is streaming apps only; built-in activities moved to the Fun tab.
+      home = home.filter(function (id) { return A.apps.byId(id); });
       A.settings.home = home;
+    } else if (page === 'fun') {
+      home = cfg.BUILTIN_IDS;
     } else {
       home = A.apps.all.map(function (app) { return app.id; });
     }
     A.$('apps-empty').hidden = page === 'home' || home.length > 0;
-    grid.setAttribute('aria-label', page === 'home' ? 'Home apps' : 'All apps');
+    grid.setAttribute('aria-label', page === 'home' ? 'Home apps' : page === 'fun' ? 'Fun activities' : 'All apps');
     A.$('rail-home').classList.toggle('active', page === 'home');
+    A.$('rail-fun').classList.toggle('active', page === 'fun');
     A.$('rail-apps').classList.toggle('active', page === 'apps');
     // Search row only on the All apps page; typing filters the grid live.
     if (page === 'apps') {
@@ -123,7 +127,13 @@
     render();
   }
 
-  function enterRail() { mode = 'rail'; focus(); }
+  function enterRail() {
+    mode = 'rail';
+    // the rail highlights where you are, so re-entry lands on the current section
+    var idx = { home: 0, fun: 1, apps: 2 }[page];
+    railIndex = idx === undefined ? 0 : idx;
+    focus();
+  }
   function enterContent() {
     mode = 'content';
     if (!rows[row] || !rows[row].length) { row = 0; }
@@ -132,7 +142,7 @@
   function activateRail() {
     var el = railItems()[railIndex];
     if (el === A.$('gear')) { A.settingsUi.open(); return; }
-    showPage(el === A.$('rail-apps') ? 'apps' : 'home');
+    showPage(el === A.$('rail-apps') ? 'apps' : el === A.$('rail-fun') ? 'fun' : 'home');
   }
 
   // ---- hold OK to move ---------------------------------------------------------
@@ -224,8 +234,9 @@
 
   A.homeScreen = { render: render, buildRows: buildRows, focus: focus, keydown: keydown, keyup: keyup };
   A.$('rail-home').onclick = function () { railIndex = 0; showPage('home'); };
-  A.$('rail-apps').onclick = function () { railIndex = 1; showPage('apps'); };
-  A.$('gear').onclick = function () { railIndex = 2; if (moving) { endMove(); } A.settingsUi.open(); };
+  A.$('rail-fun').onclick = function () { railIndex = 1; showPage('fun'); };
+  A.$('rail-apps').onclick = function () { railIndex = 2; showPage('apps'); };
+  A.$('gear').onclick = function () { railIndex = 3; if (moving) { endMove(); } A.settingsUi.open(); };
   A.$('search-bar').onclick = function () { A.$('app-search').focus(); };
   A.$('app-search').oninput = function () {
     var input = A.$('app-search');

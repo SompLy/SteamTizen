@@ -44,6 +44,9 @@ relaunch cancellation and app visibility, without contacting a TV.
 
 - Preview in a desktop browser: `python3 -m http.server -d launcher`, open
   http://localhost:8000 at 1920×1080. TV-only features fall back to sample data.
+- README screenshots: `launcher/.shots.html` stages the shot for a headless capture,
+  e.g. `chromium --headless --screenshot=docs/screenshots/snake.png --window-size=1920,1080
+  "file://$PWD/launcher/.shots.html?shot=snake"` (staged shots: snake, runner, shrek).
 - On the TV: `aerotizen install ./launcher`, then `aerotizen inspect launcher`.
   This restarts the launcher in debug mode and exposes Chrome DevTools at
   http://localhost:9222/json. Press Ctrl+C to stop forwarding.

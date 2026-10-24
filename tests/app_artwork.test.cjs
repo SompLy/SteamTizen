@@ -78,7 +78,8 @@ test('a TV-provided store ID takes precedence over model-specific catalogue IDs'
 test('Samsung artwork fills the card without losing selection or click handling', () => {
   const { A, images, timers } = runtime(true);
   let clicks = 0;
-  const tile = A.tiles.app({ id: 'app', name: 'YouTube' }, 'on', () => { clicks++; });
+  // Samsung TV Plus has no vector mark, so the TV's cached artwork is used.
+  const tile = A.tiles.app({ id: 'app', name: 'Samsung TV Plus', storeId: '111299001912' }, 'on', () => { clicks++; });
   const fallback = tile.children[0];
   const arrow = A.el('div', 'move-arrow');
   tile.appendChild(arrow);
@@ -89,14 +90,14 @@ test('Samsung artwork fills the card without losing selection or click handling'
   assert.ok(tile.classList.contains('has-artwork'));
   assert.ok(tile.classList.contains('on'));
   assert.ok(tile.children.includes(arrow));
-  assert.equal(tile.attributes['aria-label'], 'YouTube');
+  assert.equal(tile.attributes['aria-label'], 'Samsung TV Plus');
   tile.onclick(); assert.equal(clicks, 1);
   assert.equal(timers.size, 0);
 });
 
-test('failed or stalled Samsung artwork leaves the previous brand fallback visible', () => {
+test('failed or stalled Samsung artwork leaves the previous fallback visible', () => {
   const { A, images, timers } = runtime(true);
-  const tile = A.tiles.app({ id: 'unknown', name: 'YouTube' }, 'focused');
+  const tile = A.tiles.app({ id: 'unknown', name: 'Samsung TV Plus', storeId: '111299001912' }, 'focused');
   const timeout = timers.values().next().value;
   timeout();
   assert.equal(images[0].onload, null);
@@ -104,8 +105,7 @@ test('failed or stalled Samsung artwork leaves the previous brand fallback visib
   images[1].onerror();
   const fallback = tile.children[0];
   assert.equal(fallback.hidden, false);
-  assert.ok(fallback.innerHTML.includes('<svg'));
-  assert.equal(fallback.children[0].textContent, 'YouTube');
+  assert.equal(fallback.children[0].textContent, 'Samsung TV Plus');
   assert.equal(images.length, 2);
   assert.equal(tile.classList.contains('has-artwork'), false);
   assert.ok(tile.classList.contains('focused'));

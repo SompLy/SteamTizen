@@ -42,18 +42,39 @@ window.SnakeGame = (function () {
   }
 
   function draw() {
-    ctx.fillStyle = '#0b1016'; ctx.fillRect(0, 0, 1920, 1080);
-    ctx.strokeStyle = 'rgba(26,159,255,.25)'; ctx.lineWidth = 2;
-    ctx.strokeRect(1, OY + 1, GX * CELL - 2, GY * CELL - 2);
+    var bg = ctx.createLinearGradient(0, 0, 0, 1080);
+    bg.addColorStop(0, '#0a1018'); bg.addColorStop(1, '#0d1521');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, 1920, 1080);
+    // faint grid
+    ctx.strokeStyle = 'rgba(126,203,255,.06)'; ctx.lineWidth = 1;
+    for (var gx = 0; gx <= GX; gx++) { ctx.beginPath(); ctx.moveTo(gx * CELL, OY); ctx.lineTo(gx * CELL, OY + GY * CELL); ctx.stroke(); }
+    for (var gy = 0; gy <= GY; gy++) { ctx.beginPath(); ctx.moveTo(0, OY + gy * CELL); ctx.lineTo(GX * CELL, OY + gy * CELL); ctx.stroke(); }
+    // frame: soft outer line + bright inner line
+    ctx.strokeStyle = 'rgba(26,159,255,.35)'; ctx.lineWidth = 10;
+    ctx.strokeRect(5, OY + 5, GX * CELL - 10, GY * CELL - 10);
+    ctx.strokeStyle = 'rgba(26,159,255,.8)'; ctx.lineWidth = 3;
+    ctx.strokeRect(10, OY + 10, GX * CELL - 20, GY * CELL - 20);
+    // apple with a highlight
+    var fx = food.x * CELL + CELL / 2, fy = OY + food.y * CELL + CELL / 2;
     ctx.fillStyle = '#e0001c';
-    ctx.beginPath();
-    ctx.arc(food.x * CELL + CELL / 2, OY + food.y * CELL + CELL / 2, CELL * 0.32, 0, 6.29);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(fx, fy, CELL * 0.32, 0, 6.29); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.75)';
+    ctx.beginPath(); ctx.arc(fx - 7, fy - 8, 5, 0, 6.29); ctx.fill();
+    // body fades toward the tail
     for (var i = snake.length - 1; i >= 0; i--) {
-      var s = snake[i];
-      ctx.fillStyle = i === 0 ? '#7ecbff' : '#1a9fff';
+      var s = snake[i], k = 1 - 0.35 * (i / Math.max(1, snake.length - 1));
+      ctx.fillStyle = i === 0 ? '#7ecbff' : 'rgb(' + ((26 * k) | 0) + ',' + ((159 * k) | 0) + ',' + ((255 * k) | 0) + ')';
       rrect(ctx, s.x * CELL + 4, OY + s.y * CELL + 4, CELL - 8, CELL - 8, 12);
       ctx.fill();
+    }
+    // head with eyes looking where it steers
+    var h0 = snake[0], hx = h0.x * CELL + CELL / 2, hy = OY + h0.y * CELL + CELL / 2;
+    var ex = dir.y ? 10 : 0, ey = dir.x ? 10 : 0;
+    for (var e = -1; e <= 1; e += 2) {
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(hx + e * ex + dir.x * 9, hy + e * ey + dir.y * 9, 7, 0, 6.29); ctx.fill();
+      ctx.fillStyle = '#0b1016';
+      ctx.beginPath(); ctx.arc(hx + e * ex + dir.x * 12, hy + e * ey + dir.y * 12, 3.4, 0, 6.29); ctx.fill();
     }
     ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     ctx.font = '700 44px Roboto, sans-serif';
@@ -90,6 +111,7 @@ window.SnakeGame = (function () {
     },
     close: function () { running = false; if (raf) { cancelAnimationFrame(raf); raf = null; } },
     keydown: function (k) {
+      if (k === 10009 || k === 27) { return false; }  // BACK/ESC: the shell closes the game
       if (MAP[k]) {
         if (!dead && !(MAP[k].x === -dir.x && MAP[k].y === -dir.y)) { queued = MAP[k]; }
         return true;

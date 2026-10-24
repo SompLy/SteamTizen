@@ -58,7 +58,7 @@
         if (picked.indexOf(a.id) < 0 && a.name.toLowerCase().indexOf(want) === 0) { picked.push(a.id); }
       });
     });
-    return [cfg.FIREPLACE_ID].concat(picked);
+    return picked;  // built-in activities live on the Fun tab
   };
 
   apps.launch = function (app) {

@@ -182,6 +182,7 @@ window.AeroTizen.catalog = {
           "version": "custom"
         },
         "logoColour": "#ffffff",
+        "label": null,
         "textColour": "#ffffff"
       }
     },

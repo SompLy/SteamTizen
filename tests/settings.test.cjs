@@ -22,7 +22,7 @@ function loadSettings(storage) {
 
 test('defaults apply when nothing is saved', () => {
   const { settings } = loadSettings({});
-  assert.equal(settings.background, 'aurora');
+  assert.equal(settings.background, 'steam');
   assert.equal(settings.tempUnit, 'C');
   assert.equal(settings.timeFormat, '24');
   assert.equal(settings.home, null, 'null picks the default tiles on first launch');
@@ -99,5 +99,5 @@ test('save writes only known settings under the current key', () => {
 
 test('corrupt storage falls back to defaults', () => {
   const { settings } = loadSettings({ 'aerotizen.settings.v1': '{not json' });
-  assert.equal(settings.background, 'aurora');
+  assert.equal(settings.background, 'steam');
 });

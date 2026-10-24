@@ -30,6 +30,9 @@ window.Backgrounds = (function () {
       blobs: ['rgba(140,200,255,.30)', 'rgba(200,230,255,.18)', 'rgba(90,150,220,.32)', 'rgba(160,220,240,.20)'] },
     { id: 'mint', name: 'Mint', anim: 'blobs', base: '#040a08',
       blobs: ['rgba(60,220,170,.32)', 'rgba(40,160,200,.28)', 'rgba(120,230,150,.22)', 'rgba(30,120,110,.35)'] },
+    { id: 'shrek', name: 'Shrek Swamp', anim: 'blobs', base: 'radial-gradient(1600px 900px at 50% 115%, #1d3a14 0%, rgba(29,58,20,0) 65%), #0a1408',
+      slow: true, flies: true, ogre: true,
+      blobs: ['rgba(120,180,50,.42)', 'rgba(80,140,40,.40)', 'rgba(150,200,60,.26)', 'rgba(60,110,50,.45)'] },
     { id: 'starfield', name: 'Starfield', anim: 'stars', base: '#02030a' },
     { id: 'snow', name: 'Snowfall', anim: 'particles', kind: 'snow', base: 'linear-gradient(180deg,#0a1220 0%,#121c2c 100%)' },
     { id: 'fireflies', name: 'Fireflies', anim: 'particles', kind: 'fireflies', base: 'radial-gradient(1400px 900px at 50% 120%, #0d2216 0%, rgba(13,34,22,0) 60%), #030806' },
@@ -188,8 +191,36 @@ window.Backgrounds = (function () {
     });
   }
 
-  function addWaves() {
-    var paths = ['M0 60 Q 240 20 480 60 T 960 60 T 1440 60 T 1920 60 V 200 H 0 Z',
+  // The Shrek Swamp keeps an ogre silhouette standing in the murk on the left.
+  function addOgre() {
+    var ctx = canvas(), x = 260, top = 520, r = 190;
+    ctx.fillStyle = 'rgba(9,20,11,.94)';
+    // shoulders and torso
+    ctx.beginPath();
+    ctx.moveTo(x - 360, 1080);
+    ctx.quadraticCurveTo(x - 340, 880, x - 235, 810);
+    ctx.quadraticCurveTo(x - 120, 772, x, 772);
+    ctx.quadraticCurveTo(x + 120, 772, x + 235, 810);
+    ctx.quadraticCurveTo(x + 340, 880, x + 360, 1080);
+    ctx.closePath(); ctx.fill();
+    // head
+    ctx.beginPath(); ctx.ellipse(x, top + r, r * 0.95, r, 0, 0, 6.29); ctx.fill();
+    // trumpet ears
+    ctx.beginPath(); ctx.ellipse(x - r - 42, top + r - 50, 110, 42, -0.38, 0, 6.29); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x + r + 42, top + r - 50, 110, 42, 0.38, 0, 6.29); ctx.fill();
+    // rim light on the head and right shoulder
+    ctx.strokeStyle = 'rgba(160,220,95,.45)'; ctx.lineWidth = 7; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.ellipse(x, top + r, r * 0.95, r, 0, -0.9, 0.7); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x + 215, 800); ctx.quadraticCurveTo(x + 320, 875, x + 355, 1025); ctx.stroke();
+    // eyes and grin
+    ctx.fillStyle = 'rgba(220,245,155,.85)';
+    ctx.beginPath(); ctx.ellipse(x - 56, top + r - 30, 16, 11, 0, 0, 6.29); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x + 56, top + r - 30, 16, 11, 0, 0, 6.29); ctx.fill();
+    ctx.strokeStyle = 'rgba(220,245,155,.38)'; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(x - 88, top + r + 74); ctx.quadraticCurveTo(x, top + r + 124, x + 88, top + r + 74); ctx.stroke();
+  }
+
+  function addWaves() {    var paths = ['M0 60 Q 240 20 480 60 T 960 60 T 1440 60 T 1920 60 V 200 H 0 Z',
                  'M0 80 Q 240 40 480 80 T 960 80 T 1440 80 T 1920 80 V 200 H 0 Z'];
     [['rgba(30,130,190,.28)', 'bg-wave1'], ['rgba(20,90,150,.38)', 'bg-wave2']].forEach(function (w, i) {
       var d = document.createElement('div'); d.className = 'bg-wave ' + w[1];
@@ -207,7 +238,7 @@ window.Backgrounds = (function () {
     clear();
     // Only the root gets a background: a body background would paint over the animated layer.
     document.documentElement.style.background = b.base; document.body.style.background = 'transparent';
-    if (b.anim === 'blobs') { addBlobs(b); if (b.stars) { addStars(false); } }
+    if (b.anim === 'blobs') { addBlobs(b); if (b.ogre) { addOgre(); } if (b.stars) { addStars(false); } if (b.flies) { addParticles('fireflies'); } }
     else if (b.anim === 'stars') { addStars(true); }
     else if (b.anim === 'waves') { addWaves(); }
     else if (b.anim === 'particles') { addParticles(b.kind); }

@@ -134,7 +134,7 @@ window.Fireplace = (function () {
       clearTimeout(fallbackTimer); fallbackTimer = null;
     };
     video.onerror = function () { if (running && !videoSeen) { canvasFallback(); } };
-    try { video.src = A.config.FIREPLACE_VIDEO_URL; video.load(); video.play(); } catch (e) { canvasFallback(); return; }
+    try { video.src = window.AeroTizen.config.FIREPLACE_VIDEO_URL; video.load(); video.play(); } catch (e) { canvasFallback(); return; }
     fallbackTimer = setTimeout(function () { if (running && !videoSeen) { canvasFallback(); } }, 7000);
   }
 
