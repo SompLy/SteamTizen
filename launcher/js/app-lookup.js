@@ -37,4 +37,10 @@
     return match ? match.entry.fallback || null : null;
   };
   catalog.preloadedStoreId = function (appId) { return preloaded[appId] || null; };
+  // The status API (127.0.0.1:8001) knows store ids for known apps; some firmwares
+  // (e.g. 2019 T-MSLDEUC) report package ids as permanently invisible.
+  catalog.statusId = function (appId) {
+    var match = byId[appId];
+    return (match && match.storeId) || appId;
+  };
 })(window.AeroTizen);
