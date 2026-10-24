@@ -177,7 +177,11 @@ window.AeroTizen.catalog = {
       },
       "fallback": {
         "background": "linear-gradient(160deg,#1e2a4a,#101426)",
-        "wordmark": "SVT Play",
+        "logo": {
+          "slug": "svtplay",
+          "version": "custom"
+        },
+        "logoColour": "#ffffff",
         "textColour": "#ffffff"
       }
     },

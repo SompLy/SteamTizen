@@ -1,11 +1,12 @@
-// Fireplace: procedural fire (low-res heat map, upscaled) + synthesized crackle audio.
-// No media files, so it stays tiny and runs smoothly on TV hardware.
+// Fireplace: a real fireplace video (crisp picture, real crackle audio) with the
+// procedural canvas fire + synthesized sound kept as the offline fallback.
 window.Fireplace = (function () {
   'use strict';
 
   var W = 192, H = 108;               // simulation grid, upscaled by CSS to full screen
   var canvas, ctx, img, heat, palette, raf = null, running = false, last = 0;
   var audio = null, volume = 0.6;
+  var video = null, videoMode = false, fallbackTimer = null, videoSeen = false;
 
   function buildPalette() {
     // black -> deep red -> orange -> yellow -> near white
@@ -21,6 +22,8 @@ window.Fireplace = (function () {
 
   function setup() {
     canvas = document.getElementById('fire-canvas');
+    var v = document.getElementById('fire-video');
+    if (v) { v.style.display = 'none'; }
     canvas.width = W; canvas.height = H;
     ctx = canvas.getContext('2d');
     img = ctx.createImageData(W, H);
@@ -104,6 +107,7 @@ window.Fireplace = (function () {
 
   function setVolume(v) {
     volume = Math.max(0, Math.min(1, v));
+    if (videoMode && video) { video.volume = volume; }
     if (audio) { audio.master.gain.value = volume; }
     var bar = document.getElementById('fire-volume');
     bar.textContent = volume === 0 ? 'Muted' : 'Volume ' + Math.round(volume * 10);
@@ -111,14 +115,41 @@ window.Fireplace = (function () {
     setVolume.t = setTimeout(function () { bar.classList.remove('show'); }, 1500);
   }
 
+  // ---- video mode ------------------------------------------------------------
+  function canvasFallback() {
+    clearTimeout(fallbackTimer); fallbackTimer = null;
+    videoMode = false;
+    if (video) { video.style.display = 'none'; try { video.pause(); } catch (e) { /* not started */ } }
+    canvas.style.display = '';
+    raf = requestAnimationFrame(loop); startAudio();
+  }
+
+  function tryVideo() {
+    videoMode = true; canvas.style.display = 'none'; video.style.display = '';
+    video.volume = volume;
+    videoSeen = false;
+    video.onplaying = function () {
+      if (!running) { return; }
+      videoSeen = true;
+      clearTimeout(fallbackTimer); fallbackTimer = null;
+    };
+    video.onerror = function () { if (running && !videoSeen) { canvasFallback(); } };
+    try { video.src = A.config.FIREPLACE_VIDEO_URL; video.load(); video.play(); } catch (e) { canvasFallback(); return; }
+    fallbackTimer = setTimeout(function () { if (running && !videoSeen) { canvasFallback(); } }, 7000);
+  }
+
   return {
     open: function () {
       if (!canvas) { setup(); }
       document.getElementById('fireplace').hidden = false;
-      running = true; raf = requestAnimationFrame(loop); startAudio();
+      running = true;
+      if (!video) { video = document.getElementById('fire-video'); }
+      tryVideo();
     },
     close: function () {
       running = false; if (raf) { cancelAnimationFrame(raf); }
+      clearTimeout(fallbackTimer); fallbackTimer = null;
+      if (videoMode && video) { try { video.pause(); } catch (e) { /* already stopped */ } }
       stopAudio(); document.getElementById('fireplace').hidden = true;
     },
     isOpen: function () { return running; },

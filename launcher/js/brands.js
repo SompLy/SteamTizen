@@ -31,7 +31,9 @@
 
   function logoSvg(logo, fill) {
     var d = window.LOGOS && window.LOGOS[logo.slug];
-    return d ? svg('<path fill="' + fill + '" d="' + d + '"/>', 'logo') : '';
+    if (!d) { return ''; }
+    var box = (window.LOGO_BOXES && window.LOGO_BOXES[logo.slug]) || '0 0 24 24';
+    return '<svg class="logo" viewBox="' + box + '" preserveAspectRatio="xMidYMid meet"><path fill="' + fill + '" d="' + d + '"/></svg>';
   }
 
   function appTile(app, extraClass, onSelect) {

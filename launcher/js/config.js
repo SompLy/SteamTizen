@@ -25,7 +25,7 @@ AeroTizen.config = {
   HBBTV_LINK_METADATA: 'http://samsung.com/tv/metadata/hbbtv.link',
 
   FIREPLACE_ID: '__fire',
-  FIREPLACE_VIDEO: 'WuHSBSLK3_A',
+  FIREPLACE_VIDEO_URL: 'https://videos.pexels.com/video-files/13081949/13081949-hd_1920_1080_60fps.mp4',
 
   CARD_COLUMNS: { big: 3, small: 5 },  // Settings → App cards
   LONG_PRESS_MS: 600,
